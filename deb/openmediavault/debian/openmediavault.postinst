@@ -158,7 +158,6 @@ case "$1" in
 			omv-mkconf mdadm
 			omv-mkconf cpufrequtils
 			omv-mkconf cron-apt
-			omv-mkconf watchdog
 			omv-mkconf monit
 			omv-mkconf rrdcached
 			omv-mkconf avahi-daemon
@@ -180,7 +179,6 @@ case "$1" in
 		if [ -z "$2" ]; then
 			echo "Restarting services ..."
 			deb-systemd-invoke restart cron.service || :
-			deb-systemd-invoke restart watchdog.service || :
 			deb-systemd-invoke restart rrdcached.service || :
 			deb-systemd-invoke restart collectd.service || :
 			deb-systemd-invoke restart php7.0-fpm.service || :
