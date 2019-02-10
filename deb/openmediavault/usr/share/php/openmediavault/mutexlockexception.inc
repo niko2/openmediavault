@@ -1,3 +1,4 @@
+<?php
 /**
  * This file is part of OpenMediaVault.
  *
@@ -18,28 +19,9 @@
  * You should have received a copy of the GNU General Public License
  * along with OpenMediaVault. If not, see <http://www.gnu.org/licenses/>.
  */
+namespace OMV;
 
 /**
- * @ingroup webgui
- * @class OMV.form.field.plugin.FieldInfo
- * @derived Ext.plugin.Abstract
+ * @ingroup api
  */
-Ext.define("OMV.form.field.plugin.FieldInfo", {
-	extend: "Ext.plugin.Abstract",
-	alias: "plugin.fieldinfo",
-
-	config: {
-		cls: "x-form-fieldinfo",
-		text: ""
-	},
-
-	init: function(c) {
-		var me = this;
-		if (!c.isFieldLabelable)
-			return;
-		if (!Ext.isEmpty(me.text)) {
-			c.afterSubTpl = [ Ext.String.format("<div class='{0}'>{1}</div>",
-				me.getCls(), me.getText()) ];
-		}
-	}
-});
+class MutexLockException extends \Exception {}

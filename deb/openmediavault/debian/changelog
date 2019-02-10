@@ -1,3 +1,23 @@
+openmediavault (4.1.19-1) stable; urgency=low
+
+  * Add the ability to execute RPC code in parallel.
+  * Parallelize the RPC's to collect the S.M.A.R.T. and filesystem info.
+
+ -- Volker Theile <volker.theile@openmediavault.org>  Tue, 05 Feb 2019 22:25:08 +0100
+
+openmediavault (4.1.18-2) stable; urgency=low
+
+  * Fix bug in \OMV\Mutex class.
+
+ -- Volker Theile <volker.theile@openmediavault.org>  Mon, 04 Feb 2019 10:43:50 +0100
+
+openmediavault (4.1.18-1) stable; urgency=low
+
+  * Fix bug in omv-firstaid when configuring the network.
+  * Issue #270: Ensure smartctl command is not executed in parallel.
+
+ -- Volker Theile <volker.theile@openmediavault.org>  Sat, 19 Jan 2019 15:52:14 +0100
+
 openmediavault (4.1.17-1) stable; urgency=low
 
   * Update locales.

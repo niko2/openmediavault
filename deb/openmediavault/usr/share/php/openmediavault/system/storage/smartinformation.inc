@@ -144,6 +144,11 @@ class SmartInformation {
 		if ($this->dataCached !== FALSE)
 			return;
 
+		// Deny the parallel execution of the smartctl command for
+		// this device. This is necessary to prevent an increasing
+		// of the ATA error count of the device.
+		$mutex = new \OMV\Mutex(__CLASS__.__METHOD__.$this->getDeviceFile());
+
 		// Get all available S.M.A.R.T. information.
 		$cmdArgs = [];
 		$cmdArgs[] = sprintf("-x %s", escapeshellarg($this->deviceFile));
