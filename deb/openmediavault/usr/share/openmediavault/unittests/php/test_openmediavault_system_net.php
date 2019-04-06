@@ -5,7 +5,7 @@
  *
  * @license   http://www.gnu.org/licenses/gpl.html GPL Version 3
  * @author    Volker Theile <volker.theile@openmediavault.org>
- * @copyright Copyright (c) 2009-2018 Volker Theile
+ * @copyright Copyright (c) 2009-2019 Volker Theile
  *
  * OpenMediaVault is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,6 +36,7 @@ class NetworkInterfaceMock extends \OMV\System\Net\NetworkInterface {
 			"    inet6 fe80::5054:ff:fea6:7653/64 scope link ",
 			"       valid_lft forever preferred_lft forever"
 		]);
+		$this->setCached(TRUE);
 	}
 }
 

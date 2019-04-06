@@ -1,3 +1,19 @@
+openmediavault (4.1.21-1) stable; urgency=low
+
+  * Improve quick disk wiping. Remove signatures at the end of the device, too.
+  * Fix bug in wsdd configuration.
+
+ -- Volker Theile <volker.theile@openmediavault.org>  Sat, 23 Mar 2019 18:52:18 +0100
+
+openmediavault (4.1.20-1) stable; urgency=low
+
+  * Update locales.
+  * Announce SMB/CIFS shares via WSD, so they are listed in Windows 10.
+  * Issue #297: Extract upstream version for comparison.
+  * Issue #324: Fix typo in S.M.A.R.T. attributes data table.
+
+ -- Volker Theile <volker.theile@openmediavault.org>  Sat, 16 Feb 2019 18:21:28 +0100
+
 openmediavault (4.1.19-1) stable; urgency=low
 
   * Add the ability to execute RPC code in parallel.

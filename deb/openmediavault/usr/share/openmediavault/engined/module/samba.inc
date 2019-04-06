@@ -4,7 +4,7 @@
  *
  * @license   http://www.gnu.org/licenses/gpl.html GPL Version 3
  * @author    Volker Theile <volker.theile@openmediavault.org>
- * @copyright Copyright (c) 2009-2018 Volker Theile
+ * @copyright Copyright (c) 2009-2019 Volker Theile
  *
  * OpenMediaVault is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -48,6 +48,8 @@ class OMVModuleSamba extends \OMV\Engine\Module\ServiceAbstract
 		$systemCtl->disable(TRUE);
 		$systemCtl = new \OMV\System\SystemCtl("nmbd");
 		$systemCtl->disable(TRUE);
+		$systemCtl = new \OMV\System\SystemCtl("wsdd");
+		$systemCtl->disable(TRUE);
 	}
 
 	/**
@@ -61,6 +63,8 @@ class OMVModuleSamba extends \OMV\Engine\Module\ServiceAbstract
 		$systemCtl = new \OMV\System\SystemCtl("smbd");
 		$systemCtl->enable(TRUE);
 		$systemCtl = new \OMV\System\SystemCtl("nmbd");
+		$systemCtl->enable(TRUE);
+		$systemCtl = new \OMV\System\SystemCtl("wsdd");
 		$systemCtl->enable(TRUE);
 	}
 

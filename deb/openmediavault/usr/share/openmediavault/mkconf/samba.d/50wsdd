@@ -1,4 +1,4 @@
-# -*- mode: makefile; coding: utf-8 -*-
+#!/bin/sh
 #
 # This file is part of OpenMediaVault.
 #
@@ -19,21 +19,14 @@
 # You should have received a copy of the GNU General Public License
 # along with OpenMediaVault. If not, see <http://www.gnu.org/licenses/>.
 
-SASS := sassc
-SASS_FLAGS := -t compressed
-SASS_FLAGS += --sourcemap
+set -e
 
-SOURCES := $(shell ls theme*.scss)
-TARGETS := $(SOURCES:.scss=.min.css)
+. /etc/default/openmediavault
+. /usr/share/openmediavault/scripts/helper-functions
 
-all: clean css
+OMV_WSDD_DEFAULT=${OMV_WSDD_DEFAULT:-"/etc/default/wsdd"}
 
-clean:
-	rm -f $(TARGETS) $(TARGETS:.css=.css.map)
-
-css: $(TARGETS)
-
-%.min.css: %.scss
-	$(SASS) $(SASS_FLAGS) $< $@
-
-.PHONY: all clean
+xmlstarlet sel -t -m "//services/smb" \
+    -o "WSDD_OPTIONS=\"--shortlog --workgroup='" -v workgroup -o "'\"" -n \
+    ${OMV_CONFIG_FILE} | xmlstarlet unesc > ${OMV_WSDD_DEFAULT}
+chmod 644 ${OMV_WSDD_DEFAULT}

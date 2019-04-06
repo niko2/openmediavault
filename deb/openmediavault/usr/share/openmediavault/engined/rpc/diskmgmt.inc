@@ -4,7 +4,7 @@
  *
  * @license   http://www.gnu.org/licenses/gpl.html GPL Version 3
  * @author    Volker Theile <volker.theile@openmediavault.org>
- * @copyright Copyright (c) 2009-2018 Volker Theile
+ * @copyright Copyright (c) 2009-2019 Volker Theile
  *
  * OpenMediaVault is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -218,16 +218,19 @@ class OMVRpcServiceDiskMgmt extends \OMV\Rpc\ServiceAbstract {
 		]);
 		// Validate the parameters of the RPC service method.
 		$this->validateMethodParams($params, "rpc.diskmgmt.wipe");
+		// Get the device file and ensure it exists.
+		$bd = new \OMV\System\BlockDevice($params['devicefile']);
+		$bd->assertExists();
 		// Create the background process.
 		return $this->execBgProc(function($bgStatusFilename, $bgOutputFilename)
-		  use ($params) {
+		  use ($bd, $params) {
 			// Wipe the device.
 			if (TRUE === boolvalEx($params['secure'])) {
 				// Secure wipe the device.
 				$cmdArgs = [];
 				$cmdArgs[] = "-v";
 				$cmdArgs[] = "-n 1";
-				$cmdArgs[] = escapeshellarg($params['devicefile']);
+				$cmdArgs[] = escapeshellarg($bd->getDeviceFile());
 				$cmd = new \OMV\System\Process("shred", $cmdArgs);
 				$cmd->setRedirect2to1();
 				if (0 !== ($exitStatus = $this->exec($cmd->getCommandLine(),
@@ -239,7 +242,7 @@ class OMVRpcServiceDiskMgmt extends \OMV\Rpc\ServiceAbstract {
 				// Quick wipe the device (see omv-initfs).
 				$cmdArgs = [];
 				$cmdArgs[] = "--zap-all";
-				$cmdArgs[] = escapeshellarg($params['devicefile']);
+				$cmdArgs[] = escapeshellarg($bd->getDeviceFile());
 				$cmd = new \OMV\System\Process("sgdisk", $cmdArgs);
 				$cmd->setRedirect2to1();
 				if (0 !== ($exitStatus = $this->exec($cmd->getCommandLine(),
@@ -251,9 +254,30 @@ class OMVRpcServiceDiskMgmt extends \OMV\Rpc\ServiceAbstract {
 				$cmdArgs = [];
 				$cmdArgs[] = "if=/dev/zero";
 				$cmdArgs[] = sprintf("of=%s", escapeshellarg(
-				  $params['devicefile']));
+					$bd->getDeviceFile()));
 				$cmdArgs[] = "bs=4M";
 				$cmdArgs[] = "count=1";
+				$cmd = new \OMV\System\Process("dd", $cmdArgs);
+				$cmd->setRedirect2to1();
+				if (0 !== ($exitStatus = $this->exec($cmd->getCommandLine(),
+					$output, $bgOutputFilename))) {
+					throw new \OMV\ExecException($cmd->getCommandLine(),
+						$output, $exitStatus);
+				}
+				// Erase the metadata/signatures at the end of the device.
+				// Note, we still need to support 32bit systems, so use
+				// BC math functions.
+				$sectorSize = $bd->getSectorSize();
+				$sizeInSectors = bcdiv($bd->getSize(), strval($sectorSize), 0);
+				$count = bcdiv("4194304", strval($sectorSize), 0); // 4MiB
+				$seek = bcsub($sizeInSectors, $count, 0);
+				$cmdArgs = [];
+				$cmdArgs[] = "if=/dev/zero";
+				$cmdArgs[] = sprintf("of=%s", escapeshellarg(
+					$bd->getDeviceFile()));
+				$cmdArgs[] = sprintf("bs=%d", $sectorSize);
+				$cmdArgs[] = sprintf("count=%s", $count);
+				$cmdArgs[] = sprintf("seek=%s", $seek);
 				$cmd = new \OMV\System\Process("dd", $cmdArgs);
 				$cmd->setRedirect2to1();
 				if (0 !== ($exitStatus = $this->exec($cmd->getCommandLine(),
@@ -265,7 +289,7 @@ class OMVRpcServiceDiskMgmt extends \OMV\Rpc\ServiceAbstract {
 			// Reread partition table.
 			$cmdArgs = [];
 			$cmdArgs[] = "--rereadpt";
-			$cmdArgs[] = escapeshellarg($params['devicefile']);
+			$cmdArgs[] = escapeshellarg($bd->getDeviceFile());
 			$cmd = new \OMV\System\Process("blockdev", $cmdArgs);
 			$cmd->setRedirect2to1();
 			if (0 !== ($exitStatus = $this->exec($cmd->getCommandLine(),

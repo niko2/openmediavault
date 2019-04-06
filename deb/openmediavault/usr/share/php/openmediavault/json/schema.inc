@@ -4,7 +4,7 @@
  *
  * @license   http://www.gnu.org/licenses/gpl.html GPL Version 3
  * @author    Volker Theile <volker.theile@openmediavault.org>
- * @copyright Copyright (c) 2009-2018 Volker Theile
+ * @copyright Copyright (c) 2009-2019 Volker Theile
  *
  * OpenMediaVault is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -476,7 +476,7 @@ class Schema {
 			return;
 		// Note, the pattern is defined according to the ECMA 262 regular
 		// expression dialect. So it must be adapted to the PHP syntax.
-		$regex = sprintf("/%s/", $schema['pattern']);
+		$regex = sprintf("/%s/u", $schema['pattern']);
 		if (!preg_match($regex, $value)) {
 			throw new SchemaValidationException(
 			  "%s: The value '%s' doesn't match the pattern '%s' (code=%d).",
@@ -516,7 +516,7 @@ class Schema {
 		case "host-name":
 		case "hostname":
 			if (!preg_match('/^[a-zA-Z]([-a-zA-Z0-9]{0,61}[a-zA-Z0-9])'.
-			  '{0,1}$/', $value)) {
+			  '{0,1}$/u', $value)) {
 				throw new SchemaValidationException(
 				  "%s: The value '%s' is not a valid hostname.",
 				  $name, $value);

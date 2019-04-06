@@ -4,7 +4,7 @@
 #
 # @license   http://www.gnu.org/licenses/gpl.html GPL Version 3
 # @author    Volker Theile <volker.theile@openmediavault.org>
-# @copyright Copyright (c) 2009-2018 Volker Theile
+# @copyright Copyright (c) 2009-2019 Volker Theile
 #
 # OpenMediaVault is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -51,7 +51,10 @@ def call(service, method, params=None):
     s.setsockopt(
         socket.SOL_SOCKET, socket.SO_RCVTIMEO, struct.pack("ll", rcvtimeo, 0)
     )
-    s.connect(address)
+    try:
+        s.connect(address)
+    except socket.error as e:
+        raise RuntimeError("Failed to connect {}: {}".format(address, e))
     request = json.dumps({
         "service": service,
         "method": method,

@@ -3,7 +3,7 @@
  *
  * @license   http://www.gnu.org/licenses/gpl.html GPL Version 3
  * @author    Volker Theile <volker.theile@openmediavault.org>
- * @copyright Copyright (c) 2009-2018 Volker Theile
+ * @copyright Copyright (c) 2009-2019 Volker Theile
  *
  * OpenMediaVault is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -193,9 +193,9 @@ Ext.define("OMV.module.admin.storage.smart.device.information.Attributes", {
 		width: 55,
 		align: "center"
 	},{
-		text: _("Treshold"),
-		dataIndex: "treshold",
-		stateId: "treshold",
+		text: _("Threshold"),
+		dataIndex: "threshold",
+		stateId: "threshold",
 		width: 55,
 		align: "center"
 	},{
@@ -254,7 +254,7 @@ Ext.define("OMV.module.admin.storage.smart.device.information.Attributes", {
 						{ name: "flags", type: "string" },
 						{ name: "value", type: "int" },
 						{ name: "worst", type: "int" },
-						{ name: "treshold", type: "int" },
+						{ name: "threshold", type: "int" },
 						{ name: "whenfailed", type: "string" },
 						{ name: "rawvalue", type: "string" },
 						{ name: "description", type: "string" },
