@@ -1,8 +1,24 @@
+openmediavault (4.1.26-1) stable; urgency=low
+
+  * The smbd daemon must be restarted when groups are modified in order to
+    take these changes into action, otherwise it is possible that a user
+    still works with privileges that are already obsolete.
+  * Fix /sharedfolders mounting issue.
+
+ -- Volker Theile <volker.theile@openmediavault.org>  Fri, 27 Sep 2019 16:44:26 +0200
+
+openmediavault (4.1.25-1) stable; urgency=low
+
+  * Issue #452: SharedFolders do not mount on ZFS File system.
+
+ -- Volker Theile <volker.theile@openmediavault.org>  Thu, 19 Sep 2019 08:22:45 +0200
+
 openmediavault (4.1.24-1) stable; urgency=low
 
   * Fix bug in uploading Debian packages via UI.
   * Issue #417: Exit omv-firstaid and show an error when no network interfaces
     are detected.
+  * Issue #437: Fix bug collecting S.M.A.R.T. data from NVMe's.
 
  -- Volker Theile <volker.theile@openmediavault.org>  Tue, 20 Aug 2019 13:41:23 +0200
 
