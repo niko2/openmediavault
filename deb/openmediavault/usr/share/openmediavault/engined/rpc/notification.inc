@@ -4,7 +4,7 @@
  *
  * @license   http://www.gnu.org/licenses/gpl.html GPL Version 3
  * @author    Volker Theile <volker.theile@openmediavault.org>
- * @copyright Copyright (c) 2009-2019 Volker Theile
+ * @copyright Copyright (c) 2009-2020 Volker Theile
  *
  * OpenMediaVault is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -240,7 +240,7 @@ class OMVRpcServiceEmailNotification extends \OMV\Rpc\ServiceAbstract {
 		// Check whether the module is marked dirty. In this case the
 		// current configuration is not applied and sending an email might
 		// fail.
-		if ($this->isModuleDirty("email"))
+		if ($this->isModuleDirty("postfix"))
 			throw new \OMV\Config\ConfigDirtyException();
 		// Get the configuration object.
 		$db = \OMV\Config\Database::getInstance();

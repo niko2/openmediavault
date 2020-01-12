@@ -3,7 +3,7 @@
  *
  * @license   http://www.gnu.org/licenses/gpl.html GPL Version 3
  * @author    Volker Theile <volker.theile@openmediavault.org>
- * @copyright Copyright (c) 2009-2019 Volker Theile
+ * @copyright Copyright (c) 2009-2020 Volker Theile
  *
  * OpenMediaVault is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -45,6 +45,11 @@ body > .x-mask {
 /* Form fieldset */
 .x-fieldset-header-default > .x-fieldset-header-text {
 	color: $omv-color-more-darker;
+}
+/* Fix Safari browser issue */
+/* https://github.com/openmediavault/openmediavault/issues/467 */
+.x-fieldset-header-default > .x-fieldset-header-text {
+	position: unset;
 }
 /******************************************************************************/
 /* Trigger field */

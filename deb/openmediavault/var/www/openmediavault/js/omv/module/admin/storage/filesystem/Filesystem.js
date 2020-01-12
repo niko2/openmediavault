@@ -3,7 +3,7 @@
  *
  * @license   http://www.gnu.org/licenses/gpl.html GPL Version 3
  * @author    Volker Theile <volker.theile@openmediavault.org>
- * @copyright Copyright (c) 2009-2019 Volker Theile
+ * @copyright Copyright (c) 2009-2020 Volker Theile
  *
  * OpenMediaVault is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -478,8 +478,8 @@ Ext.define("OMV.module.admin.storage.filesystem.Filesystems", {
 		sortable: true,
 		dataIndex: "status",
 		stateId: "status",
-		renderer: function(value) {
-			switch(value) {
+		renderer: function(value, metaData) {
+			switch (value) {
 			case 1:
 				value = _("Online");
 				break;
@@ -488,6 +488,7 @@ Ext.define("OMV.module.admin.storage.filesystem.Filesystems", {
 				  _("Initializing");
 				break;
 			default:
+				metaData.tdCls += " x-color-error";
 				value = _("Missing");
 				break;
 			}

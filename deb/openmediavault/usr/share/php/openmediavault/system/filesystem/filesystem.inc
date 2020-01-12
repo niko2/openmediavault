@@ -4,7 +4,7 @@
  *
  * @license   http://www.gnu.org/licenses/gpl.html GPL Version 3
  * @author    Volker Theile <volker.theile@openmediavault.org>
- * @copyright Copyright (c) 2009-2019 Volker Theile
+ * @copyright Copyright (c) 2009-2020 Volker Theile
  *
  * OpenMediaVault is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -559,7 +559,7 @@ class Filesystem extends \OMV\System\BlockDevice
 		$this->getData();
 		$cmdArgs = [];
 		$cmdArgs[] = "-cnrv";
-		$cmdArgs[] = "-o SOURCE,TARGET";
+		$cmdArgs[] = "-o SOURCE,TARGET,UUID";
 		$cmd = new \OMV\System\Process("findmnt", $cmdArgs);
 		$cmd->setRedirect2to1();
 		$cmd->execute($output);
@@ -569,30 +569,35 @@ class Filesystem extends \OMV\System\BlockDevice
 		// udev /dev
 		// devpts /dev/pts
 		// tmpfs /run
-		// /dev/sda1 /
 		// tmpfs /run/lock
 		// tmpfs /run/shm
 		// tmpfs /tmp
-		// /dev/sde1 /media/8c982ec2-8aa7-4fe2-a912-7478f0429e06
-		// /dev/sdc1 /media/ea792ccb-cce6-409d-ab9b-0e3fd2bfbfc4
-		// /dev/md0 /media/2853402e-fe8f-443b-abd5-c42892f25be1
+		// /dev/sde1 /media/8c982ec2-8aa7-4fe2-a912-7478f0429e06 8c982ec2-8aa7-4fe2-a912-7478f0429e06
+		// /dev/md0 /srv/2853402e-fe8f-443b-abd5-c42892f25be1 2853402e-fe8f-443b-abd5-c42892f25be1
 		// rpc_pipefs /var/lib/nfs/rpc_pipefs
-		// /dev/sdf1 /media/7A48-BA97
-		// /dev/mapper/vg01-lv01 /srv/_dev_disk_by-id_dm-name-vg01-lv01
-		// /dev/sdb1 /srv/dev-disk-by-label-xx\x20yy
+		// /dev/sdf1 /media/7A48-BA97 7A48-BA97
+		// /dev/mapper/vg01-lv01 /srv/_dev_disk_by-id_dm-name-vg01-lv01 82500674-26a5-11ea-88e2-c308d0da44db
+		// /dev/sdb1 /srv/dev-disk-by-label-xx\x20yy 8a003c90-26a5-11ea-8789-ef3b0d18ebb6
 		$result = FALSE;
 		foreach ($output as $outputk => $outputv) {
 			// Split the line into parts.
+			// <DEVICEFILE> <MOUNTPOINT> <FSUUID>
 			$parts = preg_split("/[\s]+/", $outputv);
-			// Skip everything that does not contain two parts.
-			if (2 !== count($parts))
-				continue;
-			// Skip everything that does not look like '/dev/xxx'.
-			if (FALSE === is_devicefile($parts[0]))
-				continue;
-			if (realpath($parts[0]) == $this->getCanonicalDeviceFile()) {
-				$result = unescape_path($parts[1]);
-				break;
+			// Is it a device file (/dev/xxx)?
+			if (is_devicefile($parts[0])) {
+				if (realpath($parts[0]) == $this->getCanonicalDeviceFile()) {
+					$result = unescape_path($parts[1]);
+					break;
+				}
+			}
+			// Is it a UUID?
+			if ((3 == count($parts)) && is_fs_uuid($parts[2])) {
+				if ($this->hasUuid()) {
+					if ($parts[2] == $this->getUuid()) {
+						$result = unescape_path($parts[1]);
+						break;
+					}
+				}
 			}
 		}
 		return $result;
@@ -660,7 +665,7 @@ class Filesystem extends \OMV\System\BlockDevice
 		$this->getData();
 		$cmdArgs = [];
 		$cmdArgs[] = "-cnrv";
-		$cmdArgs[] = "-o SOURCE";
+		$cmdArgs[] = "-o SOURCE,UUID";
 		$cmd = new \OMV\System\Process("findmnt", $cmdArgs);
 		$cmd->setRedirect2to1();
 		$cmd->execute($output);
@@ -670,21 +675,29 @@ class Filesystem extends \OMV\System\BlockDevice
 		// udev
 		// devpts
 		// tmpfs
-		// /dev/sda1
-		// /dev/sde1
-		// /dev/sdc1
-		// /dev/md0
-		// /dev/sdf1
-		// /dev/mapper/vg01-lv01
+		// /dev/sda1 90ee6298-385f-4841-bfdc-8b1e0e0ae5c1
+		// /dev/sdc1 e248be58-2e8c-4abf-9473-7dca10d0ad32
+		// /dev/md0 6ec83dab-5aaa-4e42-88ba-eee5011c4318
+		// /dev/mapper/vg01-lv01 60566672-8aad-4c1c-85c4-ca4196b7bbc5
 		$result = FALSE;
 		foreach ($output as $outputk => $outputv) {
-			// Skip everything that does not look like '/dev/xxx'.
-			if (FALSE === is_devicefile($outputv))
-				continue;
-			// Compare the device files.
-			if (realpath($outputv) == $this->getCanonicalDeviceFile()) {
-				$result = TRUE;
-				break;
+			// Split the line into parts.
+			$parts = preg_split("/[\s]+/", $outputv);
+			// Is it a device file (/dev/xxx)?
+			if (is_devicefile($parts[0])) {
+				if (realpath($parts[0]) == $this->getCanonicalDeviceFile()) {
+					$result = TRUE;
+					break;
+				}
+			}
+			// Is it a UUID?
+			if ((2 == count($parts)) && is_fs_uuid($parts[1])) {
+				if ($this->hasUuid()) {
+					if ($parts[1] == $this->getUuid()) {
+						$result = TRUE;
+						break;
+					}
+				}
 			}
 		}
 		return $result;

@@ -3,7 +3,7 @@
  *
  * @license   http://www.gnu.org/licenses/gpl.html GPL Version 3
  * @author    Volker Theile <volker.theile@openmediavault.org>
- * @copyright Copyright (c) 2009-2019 Volker Theile
+ * @copyright Copyright (c) 2009-2020 Volker Theile
  *
  * OpenMediaVault is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -647,9 +647,6 @@ Ext.define("OMV.module.admin.system.network.interface.window.Vlan", {
 		var items = me.callParent(arguments);
 		switch (name) {
 		case "advanced":
-			Ext.apply(Ext.Array.findObject(items, "name", "mtu"), {
-				hidden: true
-			});
 			Ext.apply(Ext.Array.findObject(items, "name", "wol"),{
 				hidden: true
 			});
